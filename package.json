@@ -1,4 +1,9 @@
 {
-  "dependencies": { "local-cors-proxy": "^1.1.0" },
-  "scripts": { "start": "node server.js" }
+  "name": "proxy-host",
+  "version": "1.0.0",
+  "description": "Self-hosted proxy for Google Sites",
+  "main": "server.js",
+  "dependencies": {
+    "local-cors-proxy": "^1.1.0"
+  }
 }
