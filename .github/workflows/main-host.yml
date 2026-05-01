@@ -5,11 +5,18 @@ jobs:
   run-service:
     runs-on: ubuntu-latest
     steps:
-      - name: Start Engine
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install
+        run: npm install
+
+      - name: Start
         run: |
-          # Create a basic proxy server on the fly
-          npx local-cors-proxy --port 8080 --proxyUrl https://www.tiktok.com --credentials &
-          
-          # Open the tunnel to make it accessible to your Google Site
-          echo "CHECK LOGS FOR YOUR URL"
+          node server.js & 
           npx cloudflared tunnel --url http://localhost:8080
