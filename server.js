@@ -10,18 +10,22 @@ const proxy = httpProxy.createProxyServer({
 });
 
 const server = http.createServer((req, res) => {
-  // This is the most important part to avoid the "Something went wrong" screen
+  // 1. Pretend to be a real browser
   req.headers['host'] = 'www.tiktok.com';
   req.headers['referrer'] = 'https://www.tiktok.com/';
-  req.headers['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+  req.headers['user-agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
   
+  // 2. Hide the fact that we are a proxy
+  req.headers['x-forwarded-for'] = req.connection.remoteAddress;
+  req.headers['accept-language'] = 'en-US,en;q=0.9';
+
   proxy.web(req, res);
 });
 
 proxy.on('error', function (err, req, res) {
   res.writeHead(500, { 'Content-Type': 'text/plain' });
-  res.end('Refreshing connection...');
+  res.end('Bridge is resetting... please refresh.');
 });
 
-console.log("Stealth Proxy engine active on port 8080...");
+console.log("Ultra-Stealth Proxy active on port 8080...");
 server.listen(8080);
