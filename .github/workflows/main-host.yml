@@ -18,12 +18,7 @@ jobs:
 
       - name: Start Engine
         run: |
-          # Launch your server script in the background
           node server.js & 
-          
-          # Wait for the proxy to initialize properly
-          echo "Waiting for proxy to boot..."
-          sleep 15
-          
-          # Connect the tunnel to the local IPv4 address to avoid connection refused errors
-          npx cloudflared tunnel --url http://127.0.0.1:8080
+          sleep 10
+          npx cloudflared tunnel --url http://127.0.0.1:8080 &
+          sleep 21600
