@@ -1,0 +1,15 @@
+name: Remote Host
+on: [workflow_dispatch]
+
+jobs:
+  run-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start Engine
+        run: |
+          # Create a basic proxy server on the fly
+          npx local-cors-proxy --port 8080 --proxyUrl https://www.tiktok.com --credentials &
+          
+          # Open the tunnel to make it accessible to your Google Site
+          echo "CHECK LOGS FOR YOUR URL"
+          npx cloudflared tunnel --url http://localhost:8080
