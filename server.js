@@ -1,13 +1,17 @@
-const { spawn } = require('child_process');
+const http = require('http');
+const httpProxy = require('http-proxy');
 
-// The --changeOrigin flag is the "magic" that stops the redirect crash
-const lcp = spawn('npx', [
-    'local-cors-proxy', 
-    '--port', '8080', 
-    '--proxyUrl', 'https://www.tiktok.com', 
-    '--credentials',
-    '--changeOrigin' 
-]);
+const proxy = httpProxy.createProxyServer({
+  target: 'https://www.tiktok.com',
+  changeOrigin: true, // This is the fix for the 1-second crash
+  autoRewrite: true,
+  followRedirects: true
+});
 
-lcp.stdout.on('data', (data) => { console.log(`Proxy: ${data}`); });
-lcp.stderr.on('data', (data) => { console.error(`Error: ${data}`); });
+const server = http.createServer((req, res) => {
+  // This makes sure everything goes through the proxy
+  proxy.web(req, res, { target: 'https://www.tiktok.com' });
+});
+
+console.log("Proxy engine starting on port 8080...");
+server.listen(8080);
