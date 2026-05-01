@@ -10,22 +10,19 @@ const proxy = httpProxy.createProxyServer({
 });
 
 const server = http.createServer((req, res) => {
-  // 1. Pretend to be a real browser
+  // These specific headers are usually what TikTok checks first
   req.headers['host'] = 'www.tiktok.com';
-  req.headers['referrer'] = 'https://www.tiktok.com/';
-  req.headers['user-agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+  req.headers['origin'] = 'https://www.tiktok.com';
+  req.headers['referer'] = 'https://www.tiktok.com/';
+  req.headers['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
   
-  // 2. Hide the fact that we are a proxy
-  req.headers['x-forwarded-for'] = req.connection.remoteAddress;
-  req.headers['accept-language'] = 'en-US,en;q=0.9';
-
   proxy.web(req, res);
 });
 
 proxy.on('error', function (err, req, res) {
   res.writeHead(500, { 'Content-Type': 'text/plain' });
-  res.end('Bridge is resetting... please refresh.');
+  res.end('The connection is busy. Please refresh.');
 });
 
-console.log("Ultra-Stealth Proxy active on port 8080...");
+console.log("Mirror Proxy active on port 8080...");
 server.listen(8080);
